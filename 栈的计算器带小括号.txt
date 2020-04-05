@@ -1,23 +1,24 @@
 package project;
 import java.util.Scanner;
 import java.util.Stack;  
-/*     
+/**      
+ * 用两个栈来实现算符优先
  * 一个栈存数据numStack
  * 一个存符号priStack     
- * 思路：用当前取得的运算符与priStack栈顶运算符比较优先级：若高于，则因为会先运算，放入栈顶；   
+ * 基本算法实现思路为：用当前取得的运算符与priStack栈顶运算符比较优先级：若高于，则因为会先运算，放入栈顶；   
  * 若等于，因为出现在后面，所以会后计算，所以栈顶元素出栈，取出操作数运算；   
- *  若小于，则同理，取出栈顶元素运算，将结果入操作数栈。优先级顺序是'(' > '*' = '/' > '+' = '-' > ')'      
+ *  若小于，则同理，取出栈顶元素运算，将结果入操作数栈。各个优先级'(' > '*' = '/' > '+' = '-' > ')'      
  */      
-public class text2 {      
-    private Stack priStack = new Stack();// 操作符栈 	优先符     
+public class text2 {       
+	private Stack priStack = new Stack();// 操作符栈 	优先符     
     private Stack numStack = new Stack();;// 操作数栈      数据
             
     public int caculate(String str) {      
         // 1.判断string当中有没有非法字符      
         String temp;// 用来临时存放读取的字符      
         // 2.循环开始解析字符串，当字符串解析完，且符号栈为空时，则计算完成      
-        StringBuffer tempNum = new StringBuffer();// 用来临时存放数字字符串(当为多位数时)      
-        StringBuffer string = new StringBuffer().append(str);// 用来保存，提高效率      
+        StringBuilder tempNum = new StringBuilder();// 用来临时存放数字字符串(当为多位数时)      
+        StringBuilder string = new StringBuilder().append(str);// 用来保存，提高效率      
       
         while (string.length() != 0) {      
             temp = string.substring(0, 1);      
@@ -31,9 +32,7 @@ public class text2 {
                     numStack.push(num);  
                     tempNum.delete(0, tempNum.length());      
                 }      
-                // 用当前取得的运算符与栈顶运算符比较优先级：若高于，则因为会先运算，放入栈顶；若等于，因为出现在后面，所以会后计算，所以栈顶元素出栈，取出操作数运算；      
-                // 若小于，则同理，取出栈顶元素运算，将结果入操作数栈。      
-      
+                // 用当前取得的运算符与栈顶运算符比较优先级：高于，则先运算，放入栈顶；等于，后计算，所以栈顶元素出栈，取出操作数运算，小于，则同理，取出栈顶元素运算，将结果入操作数栈。          
                 // 判断当前运算符与栈顶元素优先级，取出元素，进行计算(因为优先级可能小于栈顶元素，还小于第二个元素等等，需要用循环判断)      
                 while (!compare(temp.charAt(0)) && (!priStack.empty())) {   
                     int a = (int) numStack.pop();// 第二个运算数      
