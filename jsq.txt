@@ -1,0 +1,157 @@
+import java.util.Scanner;
+import java.util.Stack;
+
+public class jsq {
+	 private static Stack<Character> numStack = new Stack<Character>();
+	 private static Stack<Character> operStack = new Stack<Character>();	
+	    public static void main(String[] args) {
+	        char ch=' ';	//下半部分调换用的
+	    	char oper=' ';	//比较优先级 和(的检测
+	    	int i=0;//循环用的
+	 		int k = 0;//计算逆波兰表达式的长度
+		System.out.println("输入表达式:");
+    	Scanner scanner = new Scanner(System.in);
+    	String express = "";
+    	express = scanner.nextLine();
+    	int len =express.length();
+    	System.out.println("长度为:"+len);//无错误
+    	char []str = new char[len];
+    	char []str1 = new char[len];
+    	//字符串转化成数组
+    	for( i = 0; i < len; i++) {
+    		ch =express.charAt(i);
+    		str[i]=ch;
+    		 ch=' ';
+    	}
+    	/**
+    	 * 把字符串转成数组型
+    	 */
+    	System.out.print("表达式为:");
+    	for( i=0;i<len;i++) 	
+    	System.out.print(str[i]);//输出表达式
+    	System.out.println("");
+    	/**
+    	 * 上面都是正常的结果
+    	 * 举例:输入表达式:(3+2)*5-9/3	长度为:11	表达式为:(3+2)*5-9/3
+    	 * 转化成后缀
+    	 */
+    	
+    	 for(i=0;i<len;i++){	//遍历循环数组
+    		 if(str[i]>='0'&&str[i]<='9') {//数字就存里面
+    	    		numStack.push(str[i]);
+    	   		}
+    		 if(str[i]=='('){	
+				 operStack.push(str[i]);
+			 }else if(str[i]==')') {
+				 while(operStack.peek()!='(') {
+					 oper =operStack.peek();
+					 numStack.push(oper);
+					 operStack.pop();	//把这个符号出栈
+				 }
+				 operStack.pop();	//把括号输出一下(3+2)*2
+			 }
+    		 if(isOper(str[i])){//如果是字符
+    			 System.out.println("符号是:"+str[i]);
+    			//判断是不是(如果是直接存字符栈里
+    			 
+    			 //判断操作符
+    			 //判断是不是空栈 不是空栈的话    "+ - * / "
+    			 if(!operStack.isEmpty()){    					
+    				 //如果是操作符那么比较优先级
+    				 if(priority(str[i])<=priority(operStack.peek())) {
+    					 //当优先级小于栈顶的值时候  把里面的拿出来放进数组里面 把当前的放进去
+	    				oper =operStack.pop();
+	    				numStack.push(oper);
+	    				operStack.push(str[i]);
+    				 	}else{
+	    			//当优先级大于栈顶的值时候
+	    				operStack.push(str[i]);
+	    				}		
+    			}else{//如果栈空直接存储
+    				 operStack.push(str[i]);
+	    	}
+    	}
+    }
+    //把符号栈里面剩下的操作符都放进数组栈里
+    while(!operStack.isEmpty()) {
+    	numStack.push(operStack.pop());
+   }
+    
+/**
+ * 上面已经把所有数据都放在了数字栈里面了
+ * 下面就要通过循环把数据放入符号栈 
+ * 也就是把数据调过来
+ */
+    
+ 		while(!numStack.isEmpty()) {
+ 			ch = numStack.peek();
+ 			operStack.push(ch);
+ 			numStack.pop();
+ 			ch=' ';
+ 		}
+ 		/**
+ 		 * 把栈的东西转移到数组里面
+ 		 */
+
+ 		while(!operStack.isEmpty()) {
+ 			
+ 			str1[k]=operStack.peek();	//把栈顶放进数组里面
+ 			operStack.pop();			//放进去一个出栈删除
+ 			k++;						//计数单位+1
+ 		}
+ 		System.out.print("逆波兰表达式为:");
+ 		for(i=0;i<k;i++) {
+ 			System.out.print(str1[i]);
+ 			
+ 		}
+ 		System.out.println(" ");
+    /**
+     * 开始计算
+     */
+ int []str2=new int [100];
+    int j=0;
+    for(i=0;i<k;i++){
+    	if(str1[i]>='0'&&str1[i]<='9') {
+    		str2[j]=str1[i]-48;
+    		j++;   		  	
+    	}else if(str1[i]=='+') {
+    		str2[j-2]=str2[j-1]+str2[j-2];
+    		j--;
+    }else if(str1[i]=='-') {
+		str2[j-2]=str2[j-2]-str2[j-1];
+		j--;
+}else if(str1[i]=='*') {
+	str2[j-2]=str2[j-2]*str2[j-1];
+	j--;
+}else if(str1[i]=='/') {
+	str2[j-2]=str2[j-2]/str2[j-1];
+	j--;
+}
+    	}
+   // System.out.println(str2[0]);
+    System.out.println("结果为"+str2[0]);
+     
+}//main
+	 /**
+	  *    
+	  * @param oper
+	  * @return
+	  */
+	    public static boolean isOper(char oper){
+	        return  oper == '+' || oper == '-' 
+	        	 || oper == '*' || oper == '/';
+	    }
+	    /**
+	     * 
+	     * @param oper
+	     * @return
+	     */
+	    public static int priority(char oper) {
+	    	if(oper == '*' || oper == '/'){
+	            return 2;
+	        }else if(oper == '+' || oper == '-'){
+	            return 1;
+	        }
+	    	return -1;
+	    }      
+}
